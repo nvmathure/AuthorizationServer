@@ -43,7 +43,7 @@ jobs:
       - name: Zip WebApp Publish Folder
         run: |
           cd Server/bin/Release/net8.0/publish
-          zip -r -j ../../../../../WebApp.zip .
+          zip -r publish.zip .
 
       - name: Print directory structure
         run: tree
@@ -52,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WebApp
-          path: WebApp.zip
+          path: Server/bin/Release/net8.0/publish/publish.zip
