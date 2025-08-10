@@ -2,9 +2,9 @@ name: CI Build
 
 on:
   push:
-    branches: [main]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   build:
@@ -13,4 +13,41 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
+      - name: Print directory structure
+        run: tree
+
+      - name: Zip IaaC folder
+        run: |
+          zip -r IaaC.zip IaaC
+
+      - name: Publish IaaC artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: IaaC
+          path: IaaC.zip
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet packages
+        run: dotnet restore AuthorizationServer.sln
+
+      - name: Build solution
+        run: dotnet build AuthorizationServer.sln --configuration Debug --no-restore
+
+      - name: Publish solution
+        run: dotnet publish AuthorizationServer.sln --configuration Release --no-restore
+
+      - name: Zip WebApp Publish Folder
+        run: |
+          cd Server/bin/Release/net8.0/publish
+          rm appsettings.Development.json
+          zip -r WebApp.zip .
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: WebApp
+          path: Server/bin/Release/net8.0/publish/WebApp.zip
