@@ -16,15 +16,15 @@ jobs:
       - name: Print directory structure
         run: tree
 
-      # - name: Zip IaaC folder
-      #   run: |
-      #     zip -r IaaC.zip IaaC
+      - name: Zip IaaC folder
+        run: |
+          zip -r IaaC.zip IaaC
 
-      # - name: Publish IaaC artifacts
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: IaaC
-      #     path: IaaC.zip
+      - name: Publish IaaC artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: IaaC
+          path: IaaC.zip
 
       - name: Setup .NET 8
         uses: actions/setup-dotnet@v3
@@ -37,17 +37,18 @@ jobs:
       - name: Build solution
         run: dotnet build AuthorizationServer.sln --configuration Debug --no-restore
 
-      - name: Print directory structure
-        run: tree
-
       - name: Publish solution
         run: dotnet publish AuthorizationServer.sln --configuration Release --no-restore
 
       - name: Print directory structure
         run: tree
 
+      - name: Zip WebApp Publish Folder
+        run: |
+          zip -r WebApp.zip Server/bin/Release/net8.0/publish
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: app-publish
-          path: publish      
+          name: WebApp
+          path: WebApp.zip
