@@ -34,5 +34,5 @@ export class AppComponent implements OnInit {
     );
   }
 
-  title = 'authorizationserver.client';
+  title = 'Client';
 }
