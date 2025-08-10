@@ -42,7 +42,7 @@ jobs:
 
       - name: Zip WebApp Publish Folder
         run: |
-          cd Server/bin/Release/net8.0/publish
+          cd WebServer/bin/Release/net8.0/publish
           rm appsettings.Development.json
           zip -r WebApp.zip .
 
@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WebApp
-          path: Server/bin/Release/net8.0/publish/WebApp.zip
+          path: WebServer/bin/Release/net8.0/publish/WebApp.zip
