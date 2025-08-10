@@ -37,6 +37,9 @@ jobs:
       - name: Build solution
         run: dotnet build AuthorizationServer.sln --configuration Release --no-restore
 
+      - name: Print directory structure
+        run: tree
+
       - name: Publish solution
         run: dotnet publish AuthorizationServer.sln --configuration Release --no-restore
 
