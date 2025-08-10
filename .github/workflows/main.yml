@@ -40,13 +40,13 @@ jobs:
       - name: Publish solution
         run: dotnet publish AuthorizationServer.sln --configuration Release --no-restore
 
-      - name: Print directory structure
-        run: tree
-
       - name: Zip WebApp Publish Folder
         run: |
           cd Server/bin/Release/net8.0/publish
           zip -r ../../../../WebApp.zip .
+
+      - name: Print directory structure
+        run: tree
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
