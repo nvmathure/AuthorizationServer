@@ -13,4 +13,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      
+      - name: Print directory structure
+        run: tree
+
+      - name: Zip IaaC folder
+        run: |
+          zip -r IaaC.zip IaaC
+
+      - name: Publish IaaC artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: IaaC
+          path: IaaC.zip
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet packages
+        run: dotnet restore AuthorizationServer.sln
+
+      - name: Build solution
+        run: dotnet build AuthorizationServer.sln --configuration Release --no-restore
+
+      - name: Publish solution
+        run: dotnet publish AuthorizationServer.sln --configuration Release --no-build --output publish
+
+      - name: Print directory structure
+        run: tree
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-publish
+          path: publish      
