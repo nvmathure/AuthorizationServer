@@ -35,7 +35,7 @@ jobs:
         run: dotnet restore AuthorizationServer.sln
 
       - name: Build solution
-        run: dotnet build AuthorizationServer.sln --configuration Release --no-restore
+        run: dotnet build AuthorizationServer.sln --configuration Debug --no-restore
 
       - name: Print directory structure
         run: tree
