@@ -46,7 +46,7 @@ jobs:
       - name: Zip WebApp Publish Folder
         run: |
           cd Server/bin/Release/net8.0/publish
-          zip -r ../../../WebApp.zip .
+          zip -r ../../../../WebApp.zip .
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
