@@ -13,8 +13,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print directory structure
-        run: tree
+      # - name: Print directory structure
+      #   run: tree
 
       - name: Zip IaaC folder
         run: |
@@ -51,3 +51,37 @@ jobs:
         with:
           name: WebApp
           path: WebServer/bin/Release/net8.0/publish/WebApp.zip
+
+  deploy_to_dev:
+    runs-on: ubuntu-latest
+    name: Deploy to Development
+    environment: Development
+    needs: build
+    steps:
+      - name: Download WebApp artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: WebApp
+          path: WebApp
+
+      - name: Download IaaC artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: IaaC
+          path: IaaC
+
+      - name: Extract WebApp artifact
+        run: |
+          unzip WebApp.zip
+
+      - name: Extract IaaC artifact
+        run: |
+          unzip IaaC.zip     
+          
+      - name: Print directory structure
+        run: tree          
+
+      - name: Deploy to Development
+        run: |
+          echo "Deploying to Development environment..."
+          # Add your deployment commands here
