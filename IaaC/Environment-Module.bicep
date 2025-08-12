@@ -142,8 +142,8 @@ func createEnvironment(
   environmentName: environmentName
   environmentCode: environmentCodes[environmentName]
   sharedResourceNames: {
-    cosmosDbPrimaryAccountName: getResourceName('CosmosDB', environmentName, 'cfg')
-    cosmosDbEdgeAccountName: getResourceName('CosmosDB', environmentName, 'edge')
+    cosmosDbPrimaryAccountName: toLower(getResourceName('CosmosDB', environmentName, 'cfg'))
+    cosmosDbEdgeAccountName: toLower(getResourceName('CosmosDB', environmentName, 'edge'))
   }
   resourceNames: {
     apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
