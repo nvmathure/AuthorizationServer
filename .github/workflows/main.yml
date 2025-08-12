@@ -70,10 +70,6 @@ jobs:
           name: IaaC
           path: .
 
-      - name: Extract WebApp artifact
-        run: |
-          unzip WebApp.zip
-
       - name: Extract IaaC artifact
         run: |
           unzip IaaC.zip     
@@ -81,7 +77,10 @@ jobs:
       - name: Print directory structure
         run: tree          
 
-      - name: Deploy to Development
+      - name: Deploy Primary IaaC
         run: |
-          echo "Deploying to Development environment..."
-          # Add your deployment commands here
+          az deployment group create \
+            --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
+            --template-file IaaC/Azure-Primary-Resources.yaml \
+            --parameters environmentName='${{ vars.ENVIRONMENT_NAME }}' azureRegion='${{ vars.LOCATION }}' locations='${{ vars.LOCATIONS }}' \
+            --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }}
