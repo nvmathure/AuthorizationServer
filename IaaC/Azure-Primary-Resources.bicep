@@ -21,7 +21,7 @@ resource cosmosDbPrimary 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-previ
   properties: {
     enableAnalyticalStorage: true
     analyticalStorageConfiguration: {
-      schemaType: 'Json'
+      schemaType: 'FullFidelity'
     }
     databaseAccountOfferType: 'Standard'
     locations: locations
