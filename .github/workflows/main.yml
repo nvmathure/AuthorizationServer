@@ -70,7 +70,6 @@ jobs:
           name: IaaC
           path: .
 
-
       - name: Extract IaaC artifact
         run: |
           unzip IaaC.zip     
