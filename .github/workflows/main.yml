@@ -79,8 +79,10 @@ jobs:
 
       - name: Azure Login
         uses: azure/login@v1
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: $AZURE_CREDENTIALS
 
       - name: Deploy Primary IaaC
         run: |
