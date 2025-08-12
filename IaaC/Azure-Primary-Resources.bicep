@@ -4,12 +4,12 @@ param environmentName environmentNameType
 
 param azureRegion azureRegionType
 
-param azurePrimaryRegions azureRegionType[]
+param azureRegions azureRegionType[]
 
 var environment = createEnvironment(environmentName, ['me@nandanmathure.info'], azureRegion)
 
-var locations = map(range(0, length(azurePrimaryRegions)), i => {
-    locationName: azurePrimaryRegions[i]
+var locations = map(range(0, length(azureRegions)), i => {
+    locationName: azureRegions[i]
     failoverPriority: i
   })
 
