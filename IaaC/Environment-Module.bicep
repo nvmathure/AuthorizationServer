@@ -123,13 +123,16 @@ func createSettings(environmentName environmentNameType) settingsType => environ
 
 var appName = 'AuthSvr'
 
+func getRegionResourceName(
+  resourceTypeName resourceTypeNameType, 
+  environmentName environmentNameType,
+  region azureRegionType,
+  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}${regionCodes[region]}'
+
 func getResourceName(
   resourceTypeName resourceTypeNameType, 
   environmentName environmentNameType,
-  region azureRegionType | null,
-  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}${(region == null ? '' : getRegionCode(region!))}'
-
-func getRegionCode(region azureRegionType) string => regionCodes[region]
+  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}'
 
 @export()
 func createEnvironment(
@@ -139,20 +142,20 @@ func createEnvironment(
   environmentName: environmentName
   environmentCode: environmentCodes[environmentName]
   sharedResourceNames: {
-    cosmosDbPrimaryAccountName: getResourceName('CosmosDB', environmentName, null, 'cfg')
-    cosmosDbEdgeAccountName: getResourceName('CosmosDB', environmentName, null, 'edge')
+    cosmosDbPrimaryAccountName: getResourceName('CosmosDB', environmentName, 'cfg')
+    cosmosDbEdgeAccountName: getResourceName('CosmosDB', environmentName, 'edge')
   }
   resourceNames: {
-    apiManagementName: getResourceName('APIManagement', environmentName, azureRegion, '')
-    appServiceName: getResourceName('WebApp', environmentName, azureRegion, '')
-    appServicePlanName: getResourceName('FunctionApp', environmentName, azureRegion, '')
-    applicationInsightsName: getResourceName('ApplicationInsights', environmentName, azureRegion, '')
-    eventGridTopicName: getResourceName('EventGrid', environmentName, azureRegion, '')
-    keyVaultName: getResourceName('KeyVault', environmentName, azureRegion, '')
-    logAnalyticsWorkspaceName: getResourceName('LogAnalytics', environmentName, azureRegion, '')
-    serviceBusNamespaceName: getResourceName('ServiceBus', environmentName, azureRegion, '')
-    storageAccountName: getResourceName('StorageAccount', environmentName, azureRegion, '')
-    searchServiceName: getResourceName('SearchService', environmentName, azureRegion, '')
+    apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
+    appServiceName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
+    appServicePlanName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
+    applicationInsightsName: getRegionResourceName('ApplicationInsights', environmentName, azureRegion, '')
+    eventGridTopicName: getRegionResourceName('EventGrid', environmentName, azureRegion, '')
+    keyVaultName: getRegionResourceName('KeyVault', environmentName, azureRegion, '')
+    logAnalyticsWorkspaceName: getRegionResourceName('LogAnalytics', environmentName, azureRegion, '')
+    serviceBusNamespaceName: getRegionResourceName('ServiceBus', environmentName, azureRegion, '')
+    storageAccountName: getRegionResourceName('StorageAccount', environmentName, azureRegion, '')
+    searchServiceName: getRegionResourceName('SearchService', environmentName, azureRegion, '')
   }
   tags: {
     environment: environmentName
