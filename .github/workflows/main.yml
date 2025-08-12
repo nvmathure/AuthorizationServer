@@ -77,12 +77,12 @@ jobs:
       - name: Print directory structure
         run: tree          
 
-      - name: Azure Login
-        uses: azure/login@v1
+      - name: Login to Azure
+        uses: Azure/login@v1
         env:
-          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         with:
-          creds: $AZURE_CREDENTIALS
+          creds: ${{ env.CREDENTIALS }}
 
       - name: Deploy Primary IaaC
         run: |
