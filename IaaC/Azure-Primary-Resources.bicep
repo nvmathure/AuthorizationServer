@@ -25,11 +25,7 @@ resource cosmosDbPrimary 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-previ
     }
     databaseAccountOfferType: 'Standard'
     locations: locations
-    capabilities: [
-      {
-        name: 'EnableServerless'
-      }
-    ]
+    capacityMode: 'Serverless'
     minimalTlsVersion: 'Tls12'
   }
 }
