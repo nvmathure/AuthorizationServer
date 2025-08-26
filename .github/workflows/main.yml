@@ -87,6 +87,6 @@ jobs:
           az deployment group create \
             --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
             --template-file IaaC/Azure-Primary-Resources.bicep \
-            --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' edgeAzureRegions='${{ vars.LOCATIONS }}' \
+            --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
             --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }} \
             --debug
