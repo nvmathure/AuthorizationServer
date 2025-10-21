@@ -1,0 +1,20 @@
+openapi: 3.0.1
+info:
+  title: Authorization Server API
+  description: API specification for Authorization Server endpoints
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+paths:
+  # Paths will be defined here
+
+components:
+  # Schemas and security schemes will be defined here
+
+tags:
+  - name: Authentication
+    description: Authentication endpoints
+  - name: User Info
+    description: User information endpoints

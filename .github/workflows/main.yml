@@ -88,5 +88,12 @@ jobs:
             --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
             --template-file IaaC/Azure-Primary-Resources.bicep \
             --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
-            --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }} \
-            --debug
+            --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }} 
+
+      - name: Deploy IaaC
+        run: |
+          az deployment group create \
+            --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
+            --template-file IaaC/Azure-Resources.bicep \
+            --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
+            --name AuthSvr-Res-${{ github.run_number }}-${{ github.run_attempt }}             
