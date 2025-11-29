@@ -115,12 +115,10 @@ resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'Y1'
+    name: 'F1'
   }
   properties: {
     reserved: false
-    perSiteScaling: false
-    maximumElasticWorkerCount: 1
   }
 }
 
@@ -129,11 +127,9 @@ resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'Y1'
+    name: 'F1'
   }
   properties: {
     reserved: false
-    perSiteScaling: false
-    maximumElasticWorkerCount: 1
   }
 }
