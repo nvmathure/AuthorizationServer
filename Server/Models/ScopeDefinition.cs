@@ -30,10 +30,14 @@ public class ScopeDefinition
     {
         await Validate();
 
+        var childrenDefsTasks = Children.Select(async c => await c.ToScopeDef());
+        Task.WaitAll(childrenDefsTasks.ToArray());
+        var childrenDefs = childrenDefsTasks.Select(t => t.Result).ToList();
+
         return new ScopeDef(
             Name!,
             Required ?? true,
-            Children.Select(async c => await c.ToScopeDef()).ToList()
+            childrenDefs
         );
     }
 

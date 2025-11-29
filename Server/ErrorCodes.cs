@@ -9,6 +9,7 @@ internal static class ErrorCodes
     internal const int InvalidAttributeName = 0x00020001;
     internal const int InvalidAttributeType = 0x00020002;
     internal const int InvalidProcessingStyle = 0x00020003;
+    internal const int InvalidScopeName = 0x00030001;
 
     internal static IRuleBuilderOptions<T, TProperty> WithAppErrorCode<T, TProperty>(this IRuleBuilderOptions<T, TProperty> rule, int errorCode)
     {

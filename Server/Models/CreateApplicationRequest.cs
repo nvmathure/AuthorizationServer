@@ -22,10 +22,12 @@ public class CreateApplicationRequest
     {
         await Validate();
 
+        var scopeDef = await ScopeDef!.ToScopeDef();
+
         return new Application(
             id: Guid.NewGuid().ToString(),
             name: Name!,
-            scopeDef: ScopeDef!.ToScopeDef(),
+            scopeDef: scopeDef,
             attributes: Attributes?.Select(a => a.ToAttributeDef()).ToList() ?? [],
             actions: Actions?.ToList() ?? []
         );  
