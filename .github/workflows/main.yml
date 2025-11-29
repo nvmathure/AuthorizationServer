@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+    name: Build and Publish Artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,8 +53,10 @@ jobs:
           name: WebApp
           path: WebServer/bin/Release/net10.0/publish/WebApp.zip
 
-  prepare_regions:
+  prepare_regions_for_dev:
     runs-on: ubuntu-latest
+    name: Prepare Region List for Development
+    environment: Development
     needs: build
     outputs:
       regions: ${{ steps.parse.outputs.regions }}
@@ -66,9 +69,9 @@ jobs:
           echo "regions=$unique_regions" >> $GITHUB_OUTPUT
           echo "Unique regions: $unique_regions"
 
-  deploy_to_dev:
+  deploy_primary_to_dev:
     runs-on: ubuntu-latest
-    name: Deploy to Development
+    name: Deploy to Primary Resources to Development
     environment: Development
     needs: build
     steps:
@@ -104,14 +107,14 @@ jobs:
             --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
             --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }}
 
-  deploy_iaac_to_regions:
+  deploy_iaac_to_regions_for_dev:
     runs-on: ubuntu-latest
     name: Deploy IaaC to ${{ matrix.region }}
     environment: Development
-    needs: [prepare_regions, deploy_to_dev]
+    needs: [prepare_regions_for_dev, deploy_primary_to_dev]
     strategy:
       matrix:
-        region: ${{ fromJson(needs.prepare_regions.outputs.regions) }}
+        region: ${{ fromJson(needs.prepare_regions_for_dev.outputs.regions) }}
     steps:
       - name: Download IaaC artifact
         uses: actions/download-artifact@v4
