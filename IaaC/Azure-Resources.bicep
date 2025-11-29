@@ -115,8 +115,7 @@ resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'FC1'
-    tier: 'FlexConsumption'
+    name: 'Y1'
   }
   properties: {
     reserved: false
@@ -130,8 +129,7 @@ resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'FC1'
-    tier: 'FlexConsumption'
+    name: 'Y1'
   }
   properties: {
     reserved: false
