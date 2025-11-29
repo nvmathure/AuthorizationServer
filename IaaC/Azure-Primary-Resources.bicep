@@ -20,7 +20,7 @@ var edgeLocations = map(range(0, length(edgeAzureRegions)), i => {
     failoverPriority: i
   })
 
-resource cosmosDbPrimary 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' = {
+resource cosmosDbPrimary 'Microsoft.DocumentDB/databaseAccounts@2025-11-01-preview' = {
   name: environment.sharedResourceNames.cosmosDbPrimaryAccountName
   location: azureRegion
   kind: 'GlobalDocumentDB'
@@ -30,13 +30,16 @@ resource cosmosDbPrimary 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-previ
     analyticalStorageConfiguration: {
       schemaType: 'FullFidelity'
     }
+    capacity: {
+      totalThroughputLimit: 100
+    }
     databaseAccountOfferType: 'Standard'
     locations: locations
     minimalTlsVersion: 'Tls12'
   }
 }
 
-resource cosmosDbEdge 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' = {
+resource cosmosDbEdge 'Microsoft.DocumentDB/databaseAccounts@2025-11-01-preview' = {
   name: environment.sharedResourceNames.cosmosDbEdgeAccountName
   location: azureRegion
   kind: 'GlobalDocumentDB'
@@ -45,6 +48,9 @@ resource cosmosDbEdge 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview'
     enableAnalyticalStorage: true
     analyticalStorageConfiguration: {
       schemaType: 'FullFidelity'
+    }
+    capacity: {
+      totalThroughputLimit: 100
     }
     databaseAccountOfferType: 'Standard'
     locations: edgeLocations

@@ -140,8 +140,10 @@ jobs:
 
       - name: Deploy IaaC to ${{ matrix.region }}
         run: |
+          region="${{ matrix.region }}"
+          region_name="${region// /}"
           az deployment group create \
             --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
             --template-file IaaC/Azure-Resources.bicep \
             --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ matrix.region }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
-            --name AuthSvr-Res-${{ matrix.region }}-${{ github.run_number }}-${{ github.run_attempt }}
+            --name AuthSvr-Res-${region_name}-${{ github.run_number }}-${{ github.run_attempt }}
