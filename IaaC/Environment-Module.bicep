@@ -81,6 +81,7 @@ var environmentCodes = {
 var regionCodes = {
   'South Central US': 'scus'
   'North Central US': 'ncus'
+  'West US': 'wus'
 }
 
 func createSettings(environmentName environmentNameType) settingsType => environmentName == 'Production' ? {
@@ -127,7 +128,7 @@ func getRegionResourceName(
   resourceTypeName resourceTypeNameType, 
   environmentName environmentNameType,
   region azureRegionType,
-  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}${regionCodes[region]}'
+  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}-${regionCodes[region]}'
 
 func getResourceName(
   resourceTypeName resourceTypeNameType, 
