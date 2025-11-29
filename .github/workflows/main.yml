@@ -26,10 +26,10 @@ jobs:
           name: IaaC
           path: IaaC.zip
 
-      - name: Setup .NET 8
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore NuGet packages
         run: dotnet restore AuthorizationServer.sln
@@ -42,7 +42,7 @@ jobs:
 
       - name: Zip WebApp Publish Folder
         run: |
-          cd WebServer/bin/Release/net8.0/publish
+          cd WebServer/bin/Release/net10.0/publish
           rm appsettings.Development.json
           zip -r WebApp.zip .
 
@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WebApp
-          path: WebServer/bin/Release/net8.0/publish/WebApp.zip
+          path: WebServer/bin/Release/net10.0/publish/WebApp.zip
 
   deploy_to_dev:
     runs-on: ubuntu-latest
