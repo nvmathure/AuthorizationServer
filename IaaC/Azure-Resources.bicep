@@ -28,6 +28,63 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+resource webAppAppServicePlanDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'diag-${environment.resourceNames.webAppAppServicePlanName}'
+  scope: webAppAppServicePlan
+  properties: {
+    workspaceId: logAnalyticsWorkspace.id
+    logs: [
+      {
+        category: 'AppServicePlanMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
+}
+
+resource functionAppAppServicePlanDiag 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: 'diag-${environment.resourceNames.functionAppAppServicePlanName}'
+  scope: functionAppAppServicePlan
+  properties: {
+    workspaceId: logAnalyticsWorkspace.id
+    logs: [
+      {
+        category: 'AppServicePlanMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+    metrics: [
+      {
+        category: 'AllMetrics'
+        enabled: true
+        retentionPolicy: {
+          enabled: false
+          days: 0
+        }
+      }
+    ]
+  }
+}
+
+
 resource apim 'Microsoft.ApiManagement/service@2024-10-01-preview' = {
   name: environment.resourceNames.apiManagementName
   location: environment.azureRegion
@@ -40,10 +97,36 @@ resource apim 'Microsoft.ApiManagement/service@2024-10-01-preview' = {
     publisherEmail: 'me@nandanmathure.info'
     publisherName: 'Nandan Mathure'
   }
+  
+  resource logger 'loggers' = {
+    name: applicationInsights.name
+    properties: {
+      loggerType: 'applicationInsights'
+      description: applicationInsights.name
+      credentials: {
+        instrumentationKey: applicationInsights.properties.InstrumentationKey
+      }
+    }
+  }
 }
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
+resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: environment.resourceNames.webAppAppServicePlanName
+  location: environment.azureRegion
+  tags: environment.tags
+  sku: {
+    name: 'FC1'
+    tier: 'FlexConsumption'
+  }
+  properties: {
+    reserved: false
+    perSiteScaling: false
+    maximumElasticWorkerCount: 1
+  }
+}
+
+resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
+  name: environment.resourceNames.functionAppAppServicePlanName
   location: environment.azureRegion
   tags: environment.tags
   sku: {
