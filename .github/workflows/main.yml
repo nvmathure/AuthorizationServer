@@ -55,7 +55,7 @@ jobs:
 
   prepare_regions_for_dev:
     runs-on: ubuntu-latest
-    name: Prepare Region List for Development
+    name: Development - Prepare Region List
     environment: Development
     needs: build
     outputs:
@@ -64,14 +64,21 @@ jobs:
       - name: Parse and deduplicate regions
         id: parse
         run: |
-          regions="${{ vars.LOCATIONS }},${{ vars.EDGE_LOCATIONS }}"
-          unique_regions=$(echo "$regions" | tr ',' '\n' | sort -u | grep -v '^$' | jq -R -s -c 'split("\n")[:-1]')
-          echo "regions=$unique_regions" >> $GITHUB_OUTPUT
+          locations='${{ vars.LOCATIONS }}'
+          edge_locations='${{ vars.EDGE_LOCATIONS }}'
+          
+          echo "LOCATIONS: $locations"
+          echo "EDGE_LOCATIONS: $edge_locations"
+          
+          # Combine both JSON arrays and remove duplicates
+          unique_regions=$(jq -n --argjson loc "$locations" --argjson edge "$edge_locations" '$loc + $edge | unique')
+          
           echo "Unique regions: $unique_regions"
+          echo "regions=$unique_regions" >> $GITHUB_OUTPUT
 
   deploy_primary_to_dev:
     runs-on: ubuntu-latest
-    name: Deploy to Primary Resources to Development
+    name: Development - Deploy to Primary Resources
     environment: Development
     needs: build
     steps:
@@ -109,7 +116,7 @@ jobs:
 
   deploy_iaac_to_regions_for_dev:
     runs-on: ubuntu-latest
-    name: Deploy IaaC to ${{ matrix.region }}
+    name: Development - Deploy IaaC to ${{ matrix.region }}
     environment: Development
     needs: [prepare_regions_for_dev, deploy_primary_to_dev]
     strategy:
