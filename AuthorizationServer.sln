@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36301.6
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "Client", "Client\Client.esproj", "{3DD6A06D-22FC-3AB9-E4B4-5942074E2EB5}"
 EndProject
@@ -12,6 +12,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{AB26EDFD-B378-4097-B83B-D2FEF5861DC2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SystemTests", "SystemTests\SystemTests.csproj", "{F2AAD524-9536-4FD1-A954-D841B908E03A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{C767F9D1-3191-40D9-A649-14CA5D6FD447}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{CCFF60DA-5823-46D4-A9D4-E0F1E999E285}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{23ED673D-7464-4DE3-9168-E5224235B182}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +50,13 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DD6A06D-22FC-3AB9-E4B4-5942074E2EB5} = {C767F9D1-3191-40D9-A649-14CA5D6FD447}
+		{12D792B5-31F0-4E57-A7D4-A5992079E978} = {C767F9D1-3191-40D9-A649-14CA5D6FD447}
+		{D662165C-F79C-49AB-9F79-EEDC539332A6} = {CCFF60DA-5823-46D4-A9D4-E0F1E999E285}
+		{AB26EDFD-B378-4097-B83B-D2FEF5861DC2} = {CCFF60DA-5823-46D4-A9D4-E0F1E999E285}
+		{F2AAD524-9536-4FD1-A954-D841B908E03A} = {23ED673D-7464-4DE3-9168-E5224235B182}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74F34F0B-2FC3-41B7-BDEA-CEABECA53A31}
