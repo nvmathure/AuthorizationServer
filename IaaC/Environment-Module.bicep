@@ -19,7 +19,7 @@ type sharedResourceNamesType = {
 type environmentNameType = 'Production' | 'Integration' | 'Development' | 'Testing' | 'Model'
 
 @export()
-type azureRegionType = 'South Central US' | 'North Central US'
+type azureRegionType = 'South Central US' | 'North Central US' | 'West US'
 
 type resourceTypeNameType = 'CosmosDB' | 'FunctionApp' | 'WebApp' | 'APIManagement' | 'StorageAccount' | 'KeyVault' | 'EventGrid' | 'ServiceBus' | 'LogAnalytics' | 'ApplicationInsights' | 'SearchService'
 

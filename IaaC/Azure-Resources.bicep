@@ -6,19 +6,14 @@ param azureRegion azureRegionType
 
 var environment = createEnvironment(environmentName, ['me@nandanmathure.info'], azureRegion)
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@' = {
-  name: environment.resourceNames.logAnalyticsWorkspace
-  location: environment.location
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-07-01' = {
+  name: environment.resourceNames.logAnalyticsWorkspaceName
+  location: environment.azureRegion
   tags: environment.tags
   properties: {
     sku: {
       name: 'PerGB2018'
     }
     retentionInDays: environment.settings.logAnalytics.retentionInDays
-    publicNetworkAccessForIngestion: true
-    publicNetworkAccessForQuery: true
-    workspaceCapping: {
-      dailyCap: 1
-    }
   }
 }
