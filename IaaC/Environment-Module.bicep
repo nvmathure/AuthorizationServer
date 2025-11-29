@@ -21,15 +21,17 @@ type environmentNameType = 'Production' | 'Integration' | 'Development' | 'Testi
 @export()
 type azureRegionType = 'South Central US' | 'North Central US' | 'West US'
 
-type resourceTypeNameType = 'CosmosDB' | 'FunctionApp' | 'WebApp' | 'APIManagement' | 'StorageAccount' | 'KeyVault' | 'EventGrid' | 'ServiceBus' | 'LogAnalytics' | 'ApplicationInsights' | 'SearchService'
+type resourceTypeNameType = 'AppServicePlan' | 'CosmosDB' | 'FunctionApp' | 'WebApp' | 'APIManagement' | 'StorageAccount' | 'KeyVault' | 'EventGrid' | 'ServiceBus' | 'LogAnalytics' | 'ApplicationInsights' | 'SearchService'
 
 type resourceNamesType = {
   applicationInsightsName: string
   logAnalyticsWorkspaceName: string
   keyVaultName: string
   storageAccountName: string
-  appServicePlanName: string
-  appServiceName: string
+  webAppName: string
+  functionAppName: string
+  webAppAppServicePlanName: string
+  functionAppAppServicePlanName: string
   eventGridTopicName: string
   serviceBusNamespaceName: string
   apiManagementName: string
@@ -67,6 +69,7 @@ var resourceTypePrefix = {
   ServiceBus: 'sb'
   LogAnalytics: 'la'
   ApplicationInsights: 'ai'
+  AppServicePlan: 'asp'
   SearchService: 'ss'
 }
 
@@ -148,8 +151,10 @@ func createEnvironment(
   }
   resourceNames: {
     apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
-    appServiceName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
-    appServicePlanName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
+    webAppName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
+    webAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
+    functionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
+    functionAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'functionApp')
     applicationInsightsName: getRegionResourceName('ApplicationInsights', environmentName, azureRegion, '')
     eventGridTopicName: getRegionResourceName('EventGrid', environmentName, azureRegion, '')
     keyVaultName: getRegionResourceName('KeyVault', environmentName, azureRegion, '')
