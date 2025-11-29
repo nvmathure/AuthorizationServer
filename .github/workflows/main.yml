@@ -70,8 +70,8 @@ jobs:
           echo "LOCATIONS: $locations"
           echo "EDGE_LOCATIONS: $edge_locations"
           
-          # Combine both JSON arrays and remove duplicates
-          unique_regions=$(jq -n --argjson loc "$locations" --argjson edge "$edge_locations" '$loc + $edge | unique')
+          # Combine both JSON arrays and remove duplicates (compact output)
+          unique_regions=$(jq -n -c --argjson loc "$locations" --argjson edge "$edge_locations" '$loc + $edge | unique')
           
           echo "Unique regions: $unique_regions"
           echo "regions=$unique_regions" >> $GITHUB_OUTPUT
