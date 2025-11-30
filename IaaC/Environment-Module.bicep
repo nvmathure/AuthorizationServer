@@ -1,3 +1,5 @@
+var sharedAppServicePlans = true
+
 @export()
 type environmentType = {
   environmentName: environmentNameType
@@ -30,8 +32,10 @@ type resourceNamesType = {
   storageAccountName: string
   webAppName: string
   functionAppName: string
+  edgeFunctionAppName: string
   webAppAppServicePlanName: string
   functionAppAppServicePlanName: string
+  edgeFunctionAppAppServicePlanName: string
   eventGridTopicName: string
   serviceBusNamespaceName: string
   apiManagementName: string
@@ -152,9 +156,11 @@ func createEnvironment(
   resourceNames: {
     apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
     webAppName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
-    webAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
+    webAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
     functionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
-    functionAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'functionApp')
+    functionAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'functionApp')
+    edgeFunctionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, 'Edge')
+    edgeFunctionAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'edge')
     applicationInsightsName: getRegionResourceName('ApplicationInsights', environmentName, azureRegion, '')
     eventGridTopicName: getRegionResourceName('EventGrid', environmentName, azureRegion, '')
     keyVaultName: getRegionResourceName('KeyVault', environmentName, azureRegion, '')
