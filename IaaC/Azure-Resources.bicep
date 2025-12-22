@@ -62,7 +62,7 @@ resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (conta
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'F1'
+    name: 'Y1'
   }
   properties: {
     reserved: false
@@ -74,7 +74,7 @@ resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'F1'
+    name: 'Y1'
   }
   properties: {
     reserved: false
@@ -86,7 +86,7 @@ resource edgeFunctionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = 
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'F1'
+    name: 'Y1'
   }
   properties: {
     reserved: false
