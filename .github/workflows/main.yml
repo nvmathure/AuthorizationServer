@@ -8,13 +8,14 @@ on:
 
 jobs:
   build:
+    name: Build and Publish Artifacts
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Print directory structure
-        run: tree
+      # - name: Print directory structure
+      #   run: tree
 
       - name: Zip IaaC folder
         run: |
@@ -26,10 +27,10 @@ jobs:
           name: IaaC
           path: IaaC.zip
 
-      - name: Setup .NET 8
+      - name: Setup .NET 10
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restore NuGet packages
         run: dotnet restore AuthorizationServer.sln
@@ -42,7 +43,7 @@ jobs:
 
       - name: Zip WebApp Publish Folder
         run: |
-          cd Server/bin/Release/net8.0/publish
+          cd WebServer/bin/Release/net10.0/publish
           rm appsettings.Development.json
           zip -r WebApp.zip .
 
@@ -50,4 +51,99 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: WebApp
-          path: Server/bin/Release/net8.0/publish/WebApp.zip
+          path: WebServer/bin/Release/net10.0/publish/WebApp.zip
+
+  prepare_regions_for_dev:
+    runs-on: ubuntu-latest
+    name: Development - Prepare Region List
+    environment: Development
+    needs: build
+    outputs:
+      regions: ${{ steps.parse.outputs.regions }}
+    steps:
+      - name: Parse and deduplicate regions
+        id: parse
+        run: |
+          locations='${{ vars.LOCATIONS }}'
+          edge_locations='${{ vars.EDGE_LOCATIONS }}'
+          
+          echo "LOCATIONS: $locations"
+          echo "EDGE_LOCATIONS: $edge_locations"
+          
+          # Combine both JSON arrays and remove duplicates (compact output)
+          unique_regions=$(jq -n -c --argjson loc "$locations" --argjson edge "$edge_locations" '$loc + $edge | unique')
+          
+          echo "Unique regions: $unique_regions"
+          echo "regions=$unique_regions" >> $GITHUB_OUTPUT
+
+  deploy_primary_to_dev:
+    runs-on: ubuntu-latest
+    name: Development - Deploy to Primary Resources
+    environment: Development
+    needs: build
+    steps:
+      - name: Download WebApp artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: WebApp
+          path: .
+
+      - name: Download IaaC artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: IaaC
+          path: .
+
+      - name: Extract IaaC artifact
+        run: |
+          unzip IaaC.zip     
+          
+      - name: Print directory structure
+        run: tree          
+
+      - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Primary IaaC
+        run: |
+          az deployment group create \
+            --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
+            --template-file IaaC/Azure-Primary-Resources.bicep \
+            --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ vars.LOCATION }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
+            --name AuthSvr-PriRes-${{ github.run_number }}-${{ github.run_attempt }}
+
+  deploy_iaac_to_regions_for_dev:
+    runs-on: ubuntu-latest
+    name: Development - Deploy IaaC to ${{ matrix.region }}
+    environment: Development
+    needs: [prepare_regions_for_dev, deploy_primary_to_dev]
+    strategy:
+      matrix:
+        region: ${{ fromJson(needs.prepare_regions_for_dev.outputs.regions) }}
+    steps:
+      - name: Download IaaC artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: IaaC
+          path: .
+
+      - name: Extract IaaC artifact
+        run: |
+          unzip IaaC.zip
+
+      - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy IaaC to ${{ matrix.region }}
+        run: |
+          region="${{ matrix.region }}"
+          region_name="${region// /}"
+          az deployment group create \
+            --resource-group ${{ vars.RESOURCE_GROUP_NAME }} \
+            --template-file IaaC/Azure-Resources.bicep \
+            --parameters environmentName=${{ vars.ENVIRONMENT_NAME }} azureRegion='${{ matrix.region }}' azureRegions='${{ vars.LOCATIONS }}' edgeAzureRegions='${{ vars.EDGE_LOCATIONS }}' \
+            --name AuthSvr-Res-${region_name}-${{ github.run_number }}-${{ github.run_attempt }}

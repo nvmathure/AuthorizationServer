@@ -1,7 +1,10 @@
+var sharedAppServicePlans = true
+
 @export()
 type environmentType = {
   environmentName: environmentNameType
   environmentCode: string
+  sharedAppServicePlans: bool
   sharedResourceNames: sharedResourceNamesType
   resourceNames: resourceNamesType
   tags: object
@@ -19,17 +22,21 @@ type sharedResourceNamesType = {
 type environmentNameType = 'Production' | 'Integration' | 'Development' | 'Testing' | 'Model'
 
 @export()
-type azureRegionType = 'South Central US' | 'North Central US'
+type azureRegionType = 'South Central US' | 'North Central US' | 'West US'
 
-type resourceTypeNameType = 'CosmosDB' | 'FunctionApp' | 'WebApp' | 'APIManagement' | 'StorageAccount' | 'KeyVault' | 'EventGrid' | 'ServiceBus' | 'LogAnalytics' | 'ApplicationInsights' | 'SearchService'
+type resourceTypeNameType = 'AppServicePlan' | 'CosmosDB' | 'FunctionApp' | 'WebApp' | 'APIManagement' | 'StorageAccount' | 'KeyVault' | 'EventGrid' | 'ServiceBus' | 'LogAnalytics' | 'ApplicationInsights' | 'SearchService'
 
 type resourceNamesType = {
   applicationInsightsName: string
   logAnalyticsWorkspaceName: string
   keyVaultName: string
   storageAccountName: string
-  appServicePlanName: string
-  appServiceName: string
+  webAppName: string
+  functionAppName: string
+  edgeFunctionAppName: string
+  webAppAppServicePlanName: string
+  functionAppAppServicePlanName: string
+  edgeFunctionAppAppServicePlanName: string
   eventGridTopicName: string
   serviceBusNamespaceName: string
   apiManagementName: string
@@ -67,6 +74,7 @@ var resourceTypePrefix = {
   ServiceBus: 'sb'
   LogAnalytics: 'la'
   ApplicationInsights: 'ai'
+  AppServicePlan: 'asp'
   SearchService: 'ss'
 }
 
@@ -81,6 +89,7 @@ var environmentCodes = {
 var regionCodes = {
   'South Central US': 'scus'
   'North Central US': 'ncus'
+  'West US': 'wus'
 }
 
 func createSettings(environmentName environmentNameType) settingsType => environmentName == 'Production' ? {
@@ -123,13 +132,16 @@ func createSettings(environmentName environmentNameType) settingsType => environ
 
 var appName = 'AuthSvr'
 
+func getRegionResourceName(
+  resourceTypeName resourceTypeNameType, 
+  environmentName environmentNameType,
+  region azureRegionType,
+  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}-${regionCodes[region]}'
+
 func getResourceName(
   resourceTypeName resourceTypeNameType, 
   environmentName environmentNameType,
-  region azureRegionType | null,
-  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}${(region == null ? '' : getRegionCode(region!))}'
-
-func getRegionCode(region azureRegionType) string => regionCodes[region]
+  suffix string) string => '${resourceTypePrefix[resourceTypeName]}-${appName}-${(length(suffix) == 0) ? '' : '${suffix}-'}${environmentCodes[environmentName]}'
 
 @export()
 func createEnvironment(
@@ -138,21 +150,26 @@ func createEnvironment(
     azureRegion azureRegionType) environmentType => {
   environmentName: environmentName
   environmentCode: environmentCodes[environmentName]
+  sharedAppServicePlans: sharedAppServicePlans
   sharedResourceNames: {
-    cosmosDbPrimaryAccountName: getResourceName('CosmosDB', environmentName, null, 'cfg')
-    cosmosDbEdgeAccountName: getResourceName('CosmosDB', environmentName, null, 'edge')
+    cosmosDbPrimaryAccountName: toLower(getResourceName('CosmosDB', environmentName, 'cfg'))
+    cosmosDbEdgeAccountName: toLower(getResourceName('CosmosDB', environmentName, 'edge'))
   }
   resourceNames: {
-    apiManagementName: getResourceName('APIManagement', environmentName, azureRegion, '')
-    appServiceName: getResourceName('WebApp', environmentName, azureRegion, '')
-    appServicePlanName: getResourceName('FunctionApp', environmentName, azureRegion, '')
-    applicationInsightsName: getResourceName('ApplicationInsights', environmentName, azureRegion, '')
-    eventGridTopicName: getResourceName('EventGrid', environmentName, azureRegion, '')
-    keyVaultName: getResourceName('KeyVault', environmentName, azureRegion, '')
-    logAnalyticsWorkspaceName: getResourceName('LogAnalytics', environmentName, azureRegion, '')
-    serviceBusNamespaceName: getResourceName('ServiceBus', environmentName, azureRegion, '')
-    storageAccountName: getResourceName('StorageAccount', environmentName, azureRegion, '')
-    searchServiceName: getResourceName('SearchService', environmentName, azureRegion, '')
+    apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
+    webAppName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
+    webAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
+    functionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
+    functionAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'functionApp')
+    edgeFunctionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, 'Edge')
+    edgeFunctionAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'edge')
+    applicationInsightsName: getRegionResourceName('ApplicationInsights', environmentName, azureRegion, '')
+    eventGridTopicName: getRegionResourceName('EventGrid', environmentName, azureRegion, '')
+    keyVaultName: getRegionResourceName('KeyVault', environmentName, azureRegion, '')
+    logAnalyticsWorkspaceName: getRegionResourceName('LogAnalytics', environmentName, azureRegion, '')
+    serviceBusNamespaceName: getRegionResourceName('ServiceBus', environmentName, azureRegion, '')
+    storageAccountName: getRegionResourceName('StorageAccount', environmentName, azureRegion, '')
+    searchServiceName: getRegionResourceName('SearchService', environmentName, azureRegion, '')
   }
   tags: {
     environment: environmentName

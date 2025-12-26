@@ -1,0 +1,933 @@
+openapi: 3.0.1
+info:
+  title: Authorization Server Management API
+  description: API specification for Authorization Server Management endpoint
+  version: 1.0.0
+  contact:
+    name: Nandan Mathure
+    email: 'me@nandanmathure.com'
+
+paths:
+  /applications:
+    get:
+      tags:
+        - Application
+      summary: Retrieve a list of all registered applications
+      responses:
+        200:
+          description: A array of application summaries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApplicationSummary'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        429:
+          $ref: '#/components/responses/429Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'        
+
+    post:
+      tags:
+        - Application
+      summary: Create a new application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateApplicationRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/201Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+  /applications/{applicationId}:
+    get:
+      tags:
+        - Application
+      summary: Retrieve details of a specific application by its ID
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        200:
+          description: Application details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetails'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+    delete:
+      tags:
+        - Application
+      summary: Delete an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '204':
+          description: Application deleted successfully
+        '404':
+          description: Application not found
+    put:
+      tags:
+        - Application
+      summary: Update an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationRequest'
+      responses:
+        '200':
+          description: Application updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApplicationDetails'
+        '400':
+          description: Invalid input
+        '404':
+          description: Application not found
+
+  /applications/{applicationId}/actions:
+    post:
+      tags:
+        - Application
+      summary: Add actions to an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateActionRequest"
+      responses:
+        '200':
+          $ref: '#/components/responses/201Response'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+
+  /applications/{applicationId}/actions/{action}:
+    delete:
+      tags:
+        - Application
+      summary: Remove an action from an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/Action'
+      responses:
+        '200':
+          $ref: '#/components/responses/200Response'
+        '400':
+          $ref: '#/components/responses/400Response'
+        '404':
+          $ref: '#/components/responses/404Response'
+
+  /applications/{applicationId}/scopes:
+    post:
+      tags:
+        - Scope
+      summary: Add scopes to an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateScopeRequest"
+      responses:
+        201:
+          $ref: '#/components/responses/201Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+  /applications/{applicationId}/scopes/{scopeId}:
+    delete:
+      tags:
+        - Scope
+      summary: Remove a scope from an existing application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/ScopeId'
+      responses:
+        200:
+          $ref: '#/components/responses/200Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+  /applications/{applicationId}/roles:
+    get:
+      tags:
+        - Role
+      summary: Retrieve roles for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        200:
+          description: A list of roles for the application
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RoleSummary'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'     
+
+    post:
+      tags:
+        - Role
+      summary: Create roles for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRoleRequest"
+      responses:
+        201:
+          $ref: '#/components/responses/201Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'     
+
+  /applications/{applicationId}/roles/{roleId}:
+    get:
+      tags:
+        - Role
+      summary: Retrieve a role for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/RoleId'
+      responses:
+        200:
+          description: Role details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDetails'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+    put:
+      tags:
+        - Role
+      summary: Update a role for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/RoleId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRoleRequest"
+      responses:
+        200:
+          $ref: '#/components/responses/200Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+    delete:
+      tags:
+        - Role
+      summary: Delete a role for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/RoleId'
+      responses:
+        200:
+          $ref: '#/components/responses/200Response'
+        208:
+          $ref: '#/components/responses/208Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        405:
+          $ref: '#/components/responses/405Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+  /applications/{applicationId}/assignments:
+    post:
+      tags:
+        - Assignment
+      summary: Assign a role to a user for an application
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignmentRequest'
+      responses:
+        201:
+          $ref: '#/components/responses/201Response'
+        400:
+          $ref: '#/components/responses/400Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+    get:
+      tags:
+        - Assignment
+      summary: List all assignments for an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        200:
+          description: A list of assignments
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Assignment'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'
+
+  /applications/{applicationId}/assignments/{assignmentId}:
+    delete:
+      tags:
+        - Assignment
+      summary: Remove an assignment from an application
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+        - $ref: '#/components/parameters/AssignmentId'
+      responses:
+        200:
+          $ref: '#/components/responses/200Response'
+        401:
+          $ref: '#/components/responses/401Response'
+        403:
+          $ref: '#/components/responses/403Response'
+        404:
+          $ref: '#/components/responses/404Response'
+        500:
+          $ref: '#/components/responses/500Response'
+        502:
+          $ref: '#/components/responses/502Response'    
+
+components:
+  headers:
+    RemainingCallsHeader:
+      description: The number of remaining API calls
+      schema:
+        type: integer
+        format: int32
+    
+    LocationHeader:
+      description: Location of the newly created resource
+      schema:
+        type: string
+        format: uri
+    
+    RetryAfterHeader:
+      description: The time to wait before making a new request
+      schema:
+        type: integer
+        format: int32
+
+  parameters:
+    ApplicationId:
+      name: applicationId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ApplicationId'
+      description: The unique identifier of the application
+
+    RoleId:
+      name: roleId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/RoleId'
+      description: The unique identifier of the application
+
+    Action:
+      name: action
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Action'
+      description: The unique identifier of the action
+
+    ScopeId:
+      name: scopeId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ScopeId'
+      description: The unique identifier of the scope
+
+    AssignmentId:
+      name: assignmentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/AssignmentId'
+      description: The unique identifier of the assignment
+
+  responses:
+    200Response:
+      description: OK
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    201Response:
+      description: Created successfully
+      headers:
+        Location:
+          $ref: '#/components/headers/LocationHeader'
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    202Response:
+      description: Accepted
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    208Response:
+      description: Already Reported
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+        Location:
+          $ref: '#/components/headers/LocationHeader'
+
+    304Response:
+      description: Not Modified
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    400Response:
+      description: Invalid input
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errors'
+
+    401Response:
+      description: Unauthorized
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    403Response:
+      description: Forbidden
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    404Response:
+      description: Not Found
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    405Response:
+      description: Method Not Allowed
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    429Response:
+      description: Too Many Requests
+      headers:
+        Retry-After:
+          $ref: '#/components/headers/RetryAfterHeader'
+
+    500Response:
+      description: Internal Server Error
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+    502Response:
+      description: Bad Gateway
+      headers:
+        Remaining-Calls:
+          $ref: '#/components/headers/RemainingCallsHeader'
+
+  schemas:
+    AssignmentRequest:
+      type: object
+      required:
+        - roleId
+        - scopeId
+        - identityKey
+      properties:
+        roleId:
+          $ref: '#/components/schemas/RoleId'
+        scopeId:
+          $ref: '#/components/schemas/ScopeId'
+        identityKey:
+          $ref: '#/components/schemas/IdentityKey'
+        effective:
+          $ref: '#/components/schemas/EffectiveDate'
+        expiration:
+          $ref: '#/components/schemas/ExpirationDate'
+
+    EffectiveDate:
+      type: string
+      format: date-time
+      description: The date and time when the assignment becomes effective
+
+    ExpirationDate:
+      type: string
+      format: date-time
+      description: The date and time when the assignment expires
+
+    Assignment:
+      type: object
+      properties:
+        assignmentId:
+          $ref: '#/components/schemas/AssignmentId'
+        role:
+          $ref: "#/components/schemas/RoleSummary"
+        scope:
+          $ref: "#/components/schemas/ScopeSummary"
+        identityKey:
+          $ref: "#/components/schemas/IdentityKey"
+        effective:
+          $ref: '#/components/schemas/EffectiveDate'
+        expiration:
+          $ref: '#/components/schemas/ExpirationDate'
+
+    IdentityKey:
+      type: string
+      description: Unique identifier for a user/identity
+
+    AssignmentId:
+      type: string
+      format: uuid
+      description: Unique identifier for an Assignment
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+    RoleDetails:
+      type: object
+      required:
+        - id
+        - name
+        - description
+        - actions
+      properties:
+        id:
+          $ref: '#/components/schemas/RoleId'
+        applicationId:
+          $ref: '#/components/schemas/ApplicationId'
+        name:
+          $ref: '#/components/schemas/RoleName'
+        description:
+          $ref: '#/components/schemas/RoleDescription'
+        actions:
+          $ref: '#/components/schemas/Actions'
+        noActions:
+          $ref: '#/components/schemas/Actions'
+
+    ScopeSummary:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/ScopeId'
+        name:
+          $ref: '#/components/schemas/ScopeDefName'
+        value:
+          type: object
+          additionalProperties:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+
+    RoleSummary:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          $ref: '#/components/schemas/RoleId'
+        applicationId:
+          $ref: '#/components/schemas/ApplicationId'
+        name:
+          $ref: '#/components/schemas/RoleName'
+        description:
+          $ref: '#/components/schemas/RoleDescription'
+    ScopeId:
+      type: string
+      format: uuid
+      description: Unique identifier for a Scope
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+    ErrorCode:
+      type: string
+      description: Error code
+      example: INVALID_INPUT
+    
+    ErrorMessage:
+      type: string
+      description: Error message
+      example: The input provided is invalid.
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          $ref: '#/components/schemas/ErrorMessage'
+
+    Errors:
+      type: array
+      items:
+        $ref: '#/components/schemas/Error'
+
+    AttributeName:
+      type: string
+      description: Name of an attribute
+      example: PriceMatchLimit
+      minLength: 2
+      maxLength: 50
+      pattern: '^[A-Z][a-zA-Z]{1,49}$'
+
+    AttributeDef:
+      type: object
+      required:
+        - name
+        - type
+        - processingStyle
+      properties:
+        name:
+          $ref: '#/components/schemas/AttributeName'
+        type:
+          $ref: '#/components/schemas/AttributeTypes'
+        processingStyle:
+          $ref: '#/components/schemas/ProcessingStyles'
+
+    AttributeDefs:
+      type: array
+      items:
+        $ref: '#/components/schemas/AttributeDef'
+
+    AttributeTypes:
+      type: string
+      description: Type of an attribute
+      example: Currency
+      enum:
+        - Currency
+
+    ProcessingStyles:
+      type: string
+      description: Processing style of an attribute
+      example: Minimum
+      enum:
+        - Minimum
+        - Maximum
+
+    CreateScopeRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/ScopeDefName'
+        value:
+          type: object
+          additionalProperties:
+            type: string
+        properties:
+          type: object
+          additionalProperties:
+            type: string
+
+    ApplicationSummary:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+
+    ScopeDefName:
+      type: string
+      description: Name of a Scope Definition
+      example: Region
+      minLength: 2
+      maxLength: 50
+      pattern: '^[A-Z][a-zA-Z]{1,49}$'
+
+    ScopeDef:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/ScopeDefName'
+        children:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScopeDef'
+
+    ApplicationDetails:
+      type: object
+      required:
+        - id
+        - name
+        - actions
+        - scopeDef
+      properties:
+        id:
+          $ref: '#/components/schemas/ApplicationId'
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+        actions:
+          $ref: '#/components/schemas/Actions'
+        scopeDef:
+          $ref: '#/components/schemas/ScopeDef'
+        attributeDefs:
+          $ref: '#/components/schemas/AttributeDefs'
+
+    ApplicationId:
+      type: string
+      format: uuid
+      description: Unique identifier for an Application
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+    ApplicationName:
+      type: string
+      description: Name of an Application
+      example: PoS Application
+      minLength: 2
+      maxLength: 100
+
+    Action:
+      type: string
+      description: Unique Action code for an Application
+      example: SalesInvoice.Create
+      minLength: 2
+      maxLength: 100
+
+    Actions:
+      type: array
+      items:
+        $ref: '#/components/schemas/Action'
+
+    UpdateApplicationRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+
+    RoleName:
+      type: string
+      minLength: 2
+      maxLength: 100
+      example: Store Manager
+    
+    RoleId:
+      type: string
+      format: uuid
+      description: Unique identifier for a Role
+      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+
+    RoleDescription:
+      type: string
+      maxLength: 500
+      example: Role with permissions to manage store operations.
+
+    UpdateRoleRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/RoleName'
+        description:
+          $ref: '#/components/schemas/RoleDescription'
+        actions:
+          $ref: '#/components/schemas/Actions'
+        noActions:
+          $ref: '#/components/schemas/Actions'
+
+    CreateRoleRequest:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/RoleName'
+        description:
+          $ref: '#/components/schemas/RoleDescription'
+        actions:
+          $ref: '#/components/schemas/Actions'
+        noActions:
+          $ref: '#/components/schemas/Actions'
+
+    CreateApplicationRequest:
+      type: object
+      required:
+        - name
+        - actions
+        - scopeDef
+      properties:
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+        actions:
+          $ref: '#/components/schemas/Actions'
+        scopeDef:
+          $ref: '#/components/schemas/ScopeDef'
+        attributeDefs:
+          $ref: '#/components/schemas/AttributeDefs'          
+
+    CreateActionRequest:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          $ref: '#/components/schemas/Action'
+
+tags:
+  - name: Application
+    description: Application Management
+  - name: Scope
+    description: Scope Management
+  - name: Role
+    description: Role Management
+  - name: Assignment
+    description: Assignment Management
