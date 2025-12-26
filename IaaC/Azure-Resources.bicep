@@ -26,6 +26,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: environment.resourceNames.applicationInsightsName
   location: environment.azureRegion
   tags: environment.tags
+  kind: 'web'
   properties: {
     Application_Type: 'web'
     WorkspaceResourceId: logAnalyticsWorkspace.id
