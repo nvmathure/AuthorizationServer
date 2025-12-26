@@ -158,7 +158,7 @@ func createEnvironment(
   resourceNames: {
     apiManagementName: getRegionResourceName('APIManagement', environmentName, azureRegion, '')
     webAppName: getRegionResourceName('WebApp', environmentName, azureRegion, '')
-    webAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
+    webAppAppServicePlanName: getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'webApp')
     functionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, '')
     functionAppAppServicePlanName: sharedAppServicePlans ? getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'shared') : getRegionResourceName('AppServicePlan', environmentName, azureRegion, 'functionApp')
     edgeFunctionAppName: getRegionResourceName('FunctionApp', environmentName, azureRegion, 'Edge')

@@ -63,14 +63,14 @@ resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (conta
   location: environment.azureRegion
   tags: environment.tags
   sku: {
-    name: 'Y1'
+    name: 'F1'
   }
   properties: {
     reserved: false
   }
 }
 
-resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(azureRegions, environment.azureRegion) && !environment.sharedAppServicePlans) {
+resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(azureRegions, environment.azureRegion)) {
   name: environment.resourceNames.functionAppAppServicePlanName
   location: environment.azureRegion
   tags: environment.tags
