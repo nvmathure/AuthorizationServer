@@ -70,7 +70,7 @@ resource webAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (conta
   }
 }
 
-resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(azureRegions, environment.azureRegion)) {
+resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(azureRegions, environment.azureRegion) && !environment.sharedAppServicePlans) {
   name: environment.resourceNames.functionAppAppServicePlanName
   location: environment.azureRegion
   tags: environment.tags
@@ -82,7 +82,7 @@ resource functionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (
   }
 }
 
-resource edgeFunctionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(edgeAzureRegions, environment.azureRegion)) {
+resource edgeFunctionAppAppServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = if (contains(edgeAzureRegions, environment.azureRegion) && !environment.sharedAppServicePlans) {
   name: environment.resourceNames.edgeFunctionAppAppServicePlanName
   location: environment.azureRegion
   tags: environment.tags

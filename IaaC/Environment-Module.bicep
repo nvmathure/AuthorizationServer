@@ -4,6 +4,7 @@ var sharedAppServicePlans = true
 type environmentType = {
   environmentName: environmentNameType
   environmentCode: string
+  sharedAppServicePlans: bool
   sharedResourceNames: sharedResourceNamesType
   resourceNames: resourceNamesType
   tags: object
@@ -149,6 +150,7 @@ func createEnvironment(
     azureRegion azureRegionType) environmentType => {
   environmentName: environmentName
   environmentCode: environmentCodes[environmentName]
+  sharedAppServicePlans: sharedAppServicePlans
   sharedResourceNames: {
     cosmosDbPrimaryAccountName: toLower(getResourceName('CosmosDB', environmentName, 'cfg'))
     cosmosDbEdgeAccountName: toLower(getResourceName('CosmosDB', environmentName, 'edge'))
